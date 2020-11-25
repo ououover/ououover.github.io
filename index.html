@@ -155,6 +155,118 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ououover.github.io/2020/11/25/Kerberos%E5%8D%8F%E8%AE%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ououover">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="OuouOver">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/11/25/Kerberos%E5%8D%8F%E8%AE%AE/" class="post-title-link" itemprop="url">Kerberos协议</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-11-25 18:08:25 / 修改时间：18:09:42" itemprop="dateCreated datePublished" datetime="2020-11-25T18:08:25+08:00">2020-11-25</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Windows-AD/" itemprop="url" rel="index"><span itemprop="name">Windows-AD</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong># Kerberos协议</strong></p>
+<p><strong>### 0x01 基本概念</strong></p>
+<p>- <strong><em>\</em>Principal**</strong> 安全个体，具有唯一命名的客户端或服务器。命名规则：主名称+实例+领域，如：herlocky/admin@EXAMPLE.COM</p>
+<p>- <strong><em>\</em>TGT**</strong> 票据授予票据（Ticket Granting Ticket），包含客户端ID、客户端网络地址、票据有效期以及_client/TGS_会话密钥</p>
+<p>- <strong><em>\</em>Ticket**</strong> 票据，一条包含客户端标识信息、会话密钥和时间戳的记录，客户端用它来向目标服务器认证自己</p>
+<p>- **Session key **会话密钥，指两个安全个体之间使用的临时加密秘钥，其时效性取决于单点登录的会话时间长短</p>
+<p>- **KDC **Key分发中心（key distribution center），是一个提供票据（tickets）和临时会话密钥（session keys）的网络服务。KDC服务作为客户端和服务器端信赖的第三方，为其提供初始票据（initial ticket）服务和票据授予票据（ticket-granting ticket）服务，前半部分有时被称为AS，后半部分有时则被称为TGS</p>
+<p>- **AS **认证服务器（Authentication Server），KDC的一部分。通常会维护一个包含安全个体及其秘钥的数据库，用于身份认证</p>
+<p>- **TGS **许可证服务器（Ticket Granting Server），KDC的一部分，根据客户端传来的TGT发放访问对应服务的票据</p>
+<p>- **SS **特定服务的提供端（Service Server）</p>
+<p><strong>### 0x02 认证过程</strong></p>
+<p>Kerberos认证过程可细分为三个阶段：*<strong>*初始验证**</strong>、*<strong>*获取服务票据**</strong>和*<strong>*服务验证**</strong>。第一阶段主要是客户端向KDC中的AS发送用户信息，以请求TGT；第二阶段，客户端拿着之前获得的TGT向KDC中的TGS请求访问某个服务的票据；最后阶段拿到票据（Ticket）后到该服务的提供端验证身份；最后使用建立的加密通道与服务通信。</p>
+<p><strong>#### 2.1 初始认证</strong></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/1760605/1601372188455-91992c47-1b8d-448f-a80d-6213878673f3.png#align=left&display=inline&height=115&margin=%5Bobject%20Object%5D&name=image.png&originHeight=231&originWidth=739&size=73488&status=done&style=none&width=369.5" alt="image.png"></p>
+<p>\1. 客户端向AS发送自身用户信息（如用户ID），该动作通常发生在用户初次登陆或使用kinit命令时</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/1760605/1601372202921-11ee7ad8-103a-4717-863c-77793eecfea1.png#align=left&display=inline&height=270&margin=%5Bobject%20Object%5D&name=image.png&originHeight=540&originWidth=815&size=118404&status=done&style=none&width=407.5" alt="image.png"></p>
+<p>\2. AS检查本地数据库是否存在该用户，若存在则返回如下两条信息：</p>
+<p>消息A：使用用户密钥加密的Client/TGS会话密钥，我们称之为SK1。其中用户密钥是通过对该用户在数据库中对应的密码hash生成的</p>
+<p>消息B：使用TGS的密钥加密的TGT（包含客户端ID、客户端网络地址、票据有效期和SK1）</p>
+<p>当客户端收到消息A和B时，它会尝试用本地的用户密钥（由用户输入的密码或kerberos.keytab文件中的密码hash生成）对A进行解密，只有当本地用户密钥与AS中对应该用户的密钥匹配时才能解密成功。</p>
+<p>对A解密成功后，客户端就能拿到SK1，才能与TGS进行后续的会话，这里就相当于AS对客户端的一次验证，只有真正拥有正确用户密钥的客户端才能有机会与AS进行后续会话。</p>
+<p>而对于消息B，由于它是由TGS的密钥加密的，故无法对其解密，也看不到其中的内容。</p>
+<p><strong>#### 2.2 获取服务票据</strong></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/1760605/1601372226846-a33710d0-defe-40bb-b867-82ac47a29ba2.png#align=left&display=inline&height=197&margin=%5Bobject%20Object%5D&name=image.png&originHeight=393&originWidth=965&size=149980&status=done&style=none&width=482.5" alt="image.png"></p>
+<p>\1. 当客户端要访问某个服务时，会向TGS发送如下两条消息：</p>
+<p>消息C：消息B的内容（即加密后的TGT）和服务ID</p>
+<p>消息D：通过SK1加密的验证器（Authenticator，包括用户ID和时间戳）</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/1760605/1601372459368-a47b5969-8af6-4b4f-9d26-9441c073a6a3.png#align=left&display=inline&height=292&margin=%5Bobject%20Object%5D&name=image.png&originHeight=583&originWidth=975&size=207931&status=done&style=none&width=487.5" alt="image.png"></p>
+<p>\2. TGS收到消息C和D后，首先检查KDC数据库中是否存在所需服务，若存在则用自己的TGS密钥尝试对C中的消息B进行解密，这里也是客户端对TGS的反向认证，</p>
+<p>只有真正拥有正确密钥的TGS才能对B解密，解密成功后就能拿到其中的SK1，然后再用SK1解密消息D拿到包含用户ID和时间戳的Authenticator，</p>
+<p>通过比较分别来自C和D的用户ID，如果二者匹配，则向客户端返回如下两条消息：</p>
+<p>消息E：通过SK1加密的Client/SS会话密钥，该会话密钥是KDC新生成的随机密钥，用于将来客户端（Client）与服务端（SS）的通信加密，我们称之为SK2</p>
+<p>消息F：使用服务的密钥加密的client-server票据（Ticket，包含用户ID、用户网络地址、票据有效期和SK2），之所以要用服务的密钥加密，是因为这个Ticket是给服务端看的，</p>
+<p>但又需要经过客户端传给服务端，且不能让客户端看到。那么就会有人问，为什么KDC不直接把消息E发送给服务端呢，这样岂不省事？问题就在于网络时延，若分开发送，消息E和F就不能确保同时到达服务端，考虑一个极端情况，KDC与服务之前的网络临时不通了，那么这段时间服务端就无法收到消息E，导致验证失败，而实际上该客户端是有访问权限的。通过公钥加密这种方式巧妙地回避了该问题</p>
+<p>\2. 客户端收到消息后，尝试用SK1解密消息E，得到Client/SS会话密钥SK2</p>
+<p><strong>#### 2.3 服务验证</strong></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/1760605/1601372476849-be250502-99b4-4486-91fa-4e53e894d13b.png#align=left&display=inline&height=272&margin=%5Bobject%20Object%5D&name=image.png&originHeight=544&originWidth=928&size=200803&status=done&style=none&width=464" alt="image.png"></p>
+<p>\1. 客户端向服务端发送如下两条消息：</p>
+<p>消息G：即上一步中的消息F——client-server票据 Ticket</p>
+<p>消息H：通过SK2加密的新的验证器（Authenticator，包含用户ID和时间戳）</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/1760605/1601372490498-10f12a3a-d975-4a6f-8504-02a23f45aad0.png#align=left&display=inline&height=146&margin=%5Bobject%20Object%5D&name=image.png&originHeight=291&originWidth=986&size=107784&status=done&style=none&width=493" alt="image.png"></p>
+<p>\2. 服务端收到消息后，尝试用自己的密钥解密消息G，这里实际上也是客户端对服务端的一次验证，只有真正拥有正确密钥的服务端才能正确解密，</p>
+<p>从而有机会拿到Ticket中的SK2，然后再用该SK2解密消息H，同TGS一样，对分别来自Ticket和Authenticator中的用户ID进行验证，如果匹配成功则返回一条确认消息：</p>
+<p>消息I：通过SK2加密的新时间戳</p>
+<p>\2. 客户端尝试用S<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/96032550">https://zhuanlan.zhihu.com/p/96032550</a>K2解密消息I，得到新时间戳并验证其正确性，验证通过后，客户端与服务端就达到了相互信任，后续的通信都采用SK2加密，就好比建立了一条加密通道，二者即可享受服务与被服务的乐趣了</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://ououover.github.io/2020/11/25/HTB-Worker/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -306,20 +418,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">1</span>
+          <span class="site-state-item-count">2</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">2</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">2</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
